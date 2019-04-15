@@ -30,7 +30,7 @@ public class UserAction {
     @PostMapping("/add")
     public Map addUser(@Valid UserModel userModel, BindingResult result)
     {
-        Map messageMap = new HashMap<String,String>();
+        Map messageMap = new HashMap<String,Object>();
         if(result.hasErrors()) {
             String message =  result.getFieldError().getDefaultMessage();
             messageMap.put("message", message);
@@ -45,7 +45,7 @@ public class UserAction {
     public Map login(UserModel userModel)
     {
         userModel = repository.findByAccountAndPassword(userModel.getAccount(), userModel.getPassword());
-        Map messageMap = new HashMap<String, String >();
+        Map messageMap = new HashMap<String, Object>();
         if (userModel == null) {
             messageMap.put("message", "This user not exist");
             return messageMap;
@@ -74,13 +74,17 @@ public class UserAction {
     public Map update(UserModel user, @RequestParam Map<String, String> map)
     {
         userModel = repository.findById(user.getId()).orElse(null);
-        Map messageMap = new HashMap<String, String>();
+        Map messageMap = new HashMap<String, Object>();
         if (userModel == null) {
             messageMap.put("message", "This user not exist");
             return messageMap;
         }
         for (Map.Entry entry : map.entrySet()) {
-            userModel = userService.setColum(userModel, (String)entry.getKey(), (String)entry.getValue());
+            String key = (String)entry.getKey();
+            if(key.equals("depart") && !userService.checkDepart((Integer) entry.getValue())) {
+                 messageMap.put("message", "Illegal depart id");
+            }
+            userModel = userService.setColum(userModel, (String)entry.getKey(), entry.getValue());
         }
         repository.save(userModel);
         messageMap.put("message", "update success");

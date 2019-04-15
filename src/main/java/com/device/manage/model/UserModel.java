@@ -31,8 +31,18 @@ public class UserModel {
     private String account;
     @NotNull(message = "请设置合法的用户身份")
     private String type;
-    private static final String NORMAL_USER = "1";
-    private static final String ADMINER_USER = "2";
+    @NotNull(message = "请设置部门")
+    private Integer depart;
+    public static final String NORMAL_USER = "1";
+    public static final String ADMINER_USER = "2";
+
+    public Integer getDepart() {
+        return depart;
+    }
+
+    public void setDepart(Integer depart) {
+        this.depart = depart;
+    }
 
     public String getAccount() {
         return account;
