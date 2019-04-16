@@ -29,7 +29,6 @@ public class UserModel {
     private String password;
     @NotNull(message = "账户不能为空")
     private String account;
-    @NotNull(message = "请设置合法的用户身份")
     private String type;
     @NotNull(message = "请设置部门")
     private Integer depart;

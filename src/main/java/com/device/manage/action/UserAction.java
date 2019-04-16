@@ -1,14 +1,18 @@
 package com.device.manage.action;
 
+import com.device.manage.aspect.ResponseAspect;
 import com.device.manage.model.UserModel;
 import com.device.manage.repository.UserRepository;
 import com.device.manage.services.UserService;
+import com.device.manage.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,33 +31,33 @@ public class UserAction {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/add")
-    public Map addUser(@Valid UserModel userModel, BindingResult result)
+    @PostMapping("/register")
+    public ResponseAspect addUser(@Valid UserModel userModel, BindingResult result)
     {
-        Map messageMap = new HashMap<String,Object>();
         if(result.hasErrors()) {
             String message =  result.getFieldError().getDefaultMessage();
-            messageMap.put("message", message);
-            return messageMap;
+            return ResponseUtils.error(400, message);
 
         }
-        repository.save(userModel);
-        messageMap.put("message", "user create success!");
-        return messageMap;
+        userService.addUser(userModel);
+        Map map = new HashMap();
+        map.put("id", userModel.getId());
+        map.put("username", userModel.getUsername());
+        map.put("account", userModel.getAccount());
+        return ResponseUtils.success("用户创建成功", map);
     }
     @PostMapping("/login")
-    public Map login(UserModel userModel)
+    public ResponseAspect login(UserModel userModel)
     {
         userModel = repository.findByAccountAndPassword(userModel.getAccount(), userModel.getPassword());
         Map messageMap = new HashMap<String, Object>();
         if (userModel == null) {
-            messageMap.put("message", "This user not exist");
-            return messageMap;
+            return ResponseUtils.error(400, "账号或者密码错误，请核对后重试");
         }
         messageMap.put("id", userModel.getId());
         messageMap.put("name", userModel.getUsername());
         messageMap.put("type", userModel.getType());
-        return messageMap;
+        return ResponseUtils.success("登录成功",messageMap);
     }
 
     @PostMapping("/delete")

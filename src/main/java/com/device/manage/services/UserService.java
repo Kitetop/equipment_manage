@@ -3,12 +3,13 @@ package com.device.manage.services;
 import com.device.manage.model.UserModel;
 import com.device.manage.repository.DepartRepository;
 import com.device.manage.repository.UserRepository;
+import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Kitetop <1363215999@qq.com>
- * @version Release:
+ * @version Release: v1.0
  * Date: 2019/04/11
  */
 @Service
@@ -36,6 +37,37 @@ public class UserService {
 
         }
         return user;
+    }
+
+    /**
+     * 增加用户
+     * @param userModel
+     * @throws SelfExcUtils
+     */
+    public void addUser(UserModel userModel) throws SelfExcUtils
+    {
+        addRepeat(userModel);
+        if(checkDepart(userModel.getDepart())) {
+            if(userModel.getType() == null) {
+                userModel.setType(UserModel.NORMAL_USER);
+            }
+            userRepository.save(userModel);
+        } else {
+            throw new SelfExcUtils(400, "非法的部门");
+        }
+    }
+
+    /**
+     * 避免重复注册
+     * @param userModel
+     * @throws SelfExcUtils
+     */
+    public void addRepeat(UserModel userModel) throws SelfExcUtils
+    {
+        UserModel model = userRepository.findByAccount(userModel.getAccount()).orElse(null);
+        if(model != null) {
+            throw new SelfExcUtils(400, "账号已经存在，可以直接登录");
+        }
     }
 
     /**

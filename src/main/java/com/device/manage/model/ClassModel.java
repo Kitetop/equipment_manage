@@ -2,10 +2,7 @@ package com.device.manage.model;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,9 +18,22 @@ public class ClassModel {
     @GeneratedValue
     private Integer id;
     @NotNull(message = "种类名称不能为空")
-    private String class_name;
-    private String class_desc;
+    @Column(name = "class_name")
+    private String name;
+    @Column(name = "class_desc")
+    private String desc;
 
+    public ClassModel update(ClassModel classModel)
+    {
+        String name = classModel.getName();
+        String desc = classModel.getDesc();
+        if(this.name.equals(name)) {
+            this.name = name;
+        } else if(this.desc.equals(desc)) {
+            this.desc = desc;
+        }
+        return this;
+    }
     public Integer getId() {
         return id;
     }
@@ -32,19 +42,19 @@ public class ClassModel {
         this.id = id;
     }
 
-    public String getClass_name() {
-        return class_name;
+    public String getName() {
+        return name;
     }
 
-    public void setClass_name(String class_name) {
-        this.class_name = class_name.trim();
+    public void setName(String name) {
+        this.name = name.trim();
     }
 
-    public String getClass_desc() {
-        return class_desc;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setClass_desc(String class_desc) {
-        this.class_desc = class_desc.trim();
+    public void setDesc(String desc) {
+        this.desc = desc.trim();
     }
 }

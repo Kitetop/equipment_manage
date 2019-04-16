@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -19,6 +20,7 @@ public class DepartModel {
     @Id
     @GeneratedValue
     private Integer id;
+    @NotNull(message = "部门名称不能为空")
     private String depart;
 
     public Integer getId() {

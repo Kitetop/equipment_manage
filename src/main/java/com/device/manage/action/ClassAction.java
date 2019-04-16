@@ -1,7 +1,10 @@
 package com.device.manage.action;
 
+import com.device.manage.aspect.ResponseAspect;
 import com.device.manage.model.ClassModel;
 import com.device.manage.services.ClassService;
+import com.device.manage.utils.ResponseUtils;
+import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,8 @@ import java.util.Map;
 public class ClassAction {
     @Autowired
     private ClassService classService;
+    @Autowired
+    private ResponseAspect responseAspect;
 
 
     /**
@@ -33,16 +38,21 @@ public class ClassAction {
      * @return
      */
     @PostMapping("/add")
-    public Map<String, Object> addClass(@RequestParam ("id") Integer id, @Valid ClassModel classModel, BindingResult result)
+    public ResponseAspect addClass(@RequestParam ("userId") Integer id, @Valid ClassModel classModel, BindingResult result)
     {
-        Map<String, Object> messageMap = new HashMap<String, Object>();
         if(result.hasErrors()) {
             String message =  result.getFieldError().getDefaultMessage();
-            messageMap.put("message", message);
-            return messageMap;
+            return ResponseUtils.error(400, message);
         }
         classService.addClass(classModel);
-        messageMap.put("message", "equipment class add success ");
-        return messageMap;
+        return ResponseUtils.success("equipment class add success ", classModel);
+    }
+
+    @PostMapping("/update")
+    public ResponseAspect updateClass(@RequestParam("userid") Integer id, ClassModel classModel)
+            throws SelfExcUtils
+    {
+        classService.update(classModel);
+        return ResponseUtils.success("update success", classModel);
     }
 }
