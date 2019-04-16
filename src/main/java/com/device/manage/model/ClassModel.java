@@ -23,16 +23,15 @@ public class ClassModel {
     @Column(name = "class_desc")
     private String desc;
 
-    public ClassModel update(ClassModel classModel)
+    public void update(ClassModel classModel)
     {
         String name = classModel.getName();
         String desc = classModel.getDesc();
-        if(this.name.equals(name)) {
+        if(!this.name.equals(name)) {
             this.name = name;
-        } else if(this.desc.equals(desc)) {
+        } else if(!this.desc.equals(desc)) {
             this.desc = desc;
         }
-        return this;
     }
     public Integer getId() {
         return id;

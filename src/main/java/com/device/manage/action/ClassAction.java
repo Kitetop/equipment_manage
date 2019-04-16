@@ -45,14 +45,14 @@ public class ClassAction {
             return ResponseUtils.error(400, message);
         }
         classService.addClass(classModel);
-        return ResponseUtils.success("equipment class add success ", classModel);
+        return ResponseUtils.success("设备种类添加成功", classModel);
     }
 
     @PostMapping("/update")
-    public ResponseAspect updateClass(@RequestParam("userid") Integer id, ClassModel classModel)
+    public ResponseAspect updateClass(@RequestParam("userId") Integer id, ClassModel classModel)
             throws SelfExcUtils
     {
         classService.update(classModel);
-        return ResponseUtils.success("update success", classModel);
+        return ResponseUtils.success("设备信息更新成功", classModel);
     }
 }

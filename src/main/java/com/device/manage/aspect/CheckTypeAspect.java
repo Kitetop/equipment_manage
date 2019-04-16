@@ -49,7 +49,8 @@ public class CheckTypeAspect {
     protected Object checkClassExists(ProceedingJoinPoint point) throws Throwable
     {
         ClassModel model = (ClassModel)point.getArgs()[1];
-        if(classService.existClass(model.getId())) {
+        Integer id = model.getId();
+        if(id != null && classService.existClass(model.getId())) {
             return point.proceed();
         }
         return ResponseUtils.error(403,"不存在此类，无法修改");
