@@ -28,8 +28,8 @@ public class HandleExcUtils {
             SelfExcUtils excUtils = (SelfExcUtils) e;
             return ResponseUtils.error(excUtils.getCode(), e.getMessage());
         } else {
-            logger.error("系统异常{}",e);
-            return ResponseUtils.error(1, "UN KNOW ERROR");
+            logger.error("系统异常{}", e.getMessage());
+            return ResponseUtils.error(-1, e.getMessage());
         }
     }
 }
