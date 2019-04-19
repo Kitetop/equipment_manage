@@ -65,4 +65,14 @@ public class EquipService {
     public Page<EquipModel> findByType(String type, Pageable pageable) {
         return repository.findByType(type, pageable);
     }
+
+    /**
+     * 查询状态异常的设备
+     * @param state
+     * @param pageable
+     * @return
+     */
+    public Page<EquipModel> findAbNormal(Integer state, Pageable pageable) {
+        return repository.findAbNormal(state, pageable);
+    }
 }

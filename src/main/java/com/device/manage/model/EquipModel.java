@@ -43,11 +43,11 @@ public class EquipModel {
 
     //使用年限
     @Column(name = "pre_year")
-    private Integer year;
+    private Integer year = 5;
 
     //设备运行状态
     @Column(name = "equip_state")
-    private Integer state;
+    private Integer state = 0;
 
     public Integer getId() {
         return id;

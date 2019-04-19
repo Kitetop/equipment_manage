@@ -14,6 +14,10 @@ import org.springframework.data.repository.query.Param;
  */
 public interface EquipRepository extends JpaRepository<EquipModel, Integer> {
     Page<EquipModel> findByClassId(Integer id, Pageable pageable);
+
     @Query(value = "select * from manage_info where equip_type like %:type%", nativeQuery = true)
     Page<EquipModel> findByType(@Param("type") String type, Pageable pageable);
+
+    @Query(value = "select * from manage_info where equip_state = :state", nativeQuery = true)
+    Page<EquipModel> findAbNormal(@Param("state") Integer state, Pageable pageable);
 }

@@ -60,11 +60,14 @@ public class EquipAction {
         //设备的查询信息
         Integer class_id = model.getClassId();
         String type = model.getType();
+        Integer state = model.getState();
         Page<EquipModel> result;
         if (class_id != null) {
             result = service.findByClass(class_id, pageable);
         } else if (type != null) {
             result = service.findByType(type, pageable);
+        } else if (state != 0) {
+            result = service.findAbNormal(state, pageable);
         } else {
             result = service.findAll(pageable);
         }
