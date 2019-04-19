@@ -4,6 +4,7 @@ import com.device.manage.model.EquipModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +21,8 @@ public interface EquipRepository extends JpaRepository<EquipModel, Integer> {
 
     @Query(value = "select * from manage_info where equip_state = :state", nativeQuery = true)
     Page<EquipModel> findAbNormal(@Param("state") Integer state, Pageable pageable);
+
+    @Modifying
+    @Query(value = "update manage_info set equip_state = :state where id = :id", nativeQuery = true)
+    void updateState(@Param("id") Integer id, @Param("state") Integer state);
 }

@@ -49,6 +49,10 @@ public class EquipModel {
     @Column(name = "equip_state")
     private Integer state = 0;
 
+    private final static Integer ABNORMAL = -1;
+    private final static Integer REPAIR = 1;
+    private final static Integer DESTORY = 2;
+
     public Integer getId() {
         return id;
     }
@@ -119,5 +123,17 @@ public class EquipModel {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public static Integer getABNORMAL() {
+        return ABNORMAL;
+    }
+
+    public static Integer getREPAIR() {
+        return REPAIR;
+    }
+
+    public static Integer getDESTORY() {
+        return DESTORY;
     }
 }

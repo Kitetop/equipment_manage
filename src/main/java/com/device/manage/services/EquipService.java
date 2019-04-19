@@ -23,13 +23,13 @@ public class EquipService {
 
     /**
      * 新增设备
+     *
      * @param model
      * @throws SelfExcUtils
      */
-    public void addEquip(EquipModel model) throws SelfExcUtils
-    {
+    public void addEquip(EquipModel model) throws SelfExcUtils {
         Integer class_id = model.getClassId();
-        if(service.existClass(class_id)) {
+        if (service.existClass(class_id)) {
             repository.save(model);
         } else {
             throw new SelfExcUtils(400, "非法的设备种类");
@@ -38,6 +38,7 @@ public class EquipService {
 
     /**
      * 查询设备表中的所有信息
+     *
      * @param pageable
      * @return
      */
@@ -47,17 +48,18 @@ public class EquipService {
 
     /**
      * 根据设备种类查找分页
+     *
      * @param id
      * @param pageable
      * @return
      */
-    public Page<EquipModel> findByClass(Integer id, Pageable pageable)
-    {
+    public Page<EquipModel> findByClass(Integer id, Pageable pageable) {
         return repository.findByClassId(id, pageable);
     }
 
     /**
      * 根据设备型号查找分页
+     *
      * @param type
      * @param pageable
      * @return
@@ -68,11 +70,41 @@ public class EquipService {
 
     /**
      * 查询状态异常的设备
+     *
      * @param state
      * @param pageable
      * @return
      */
     public Page<EquipModel> findAbNormal(Integer state, Pageable pageable) {
         return repository.findAbNormal(state, pageable);
+    }
+
+    /**
+     * 修改设备的运行状态
+     *
+     * @param id
+     * @param state
+     */
+    public void changeState(Integer id, Integer state) throws SelfExcUtils {
+        if (state.equals(EquipModel.getABNORMAL()) ||
+                state.equals(EquipModel.getREPAIR()) ||
+                state.equals(EquipModel.getDESTORY())
+        ) {
+            System.out.println(id);
+            System.out.println(state);
+            repository.updateState(id, state);
+        } else {
+            throw new SelfExcUtils(400, "不能识别的设备运行码");
+        }
+    }
+
+    /**
+     * 检测设备是否存在
+     *
+     * @param id
+     * @return
+     */
+    public Boolean equipExist(Integer id) {
+        return repository.existsById(id);
     }
 }

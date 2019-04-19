@@ -38,7 +38,7 @@ public class ExamineModel {
     private Integer state;
 
     private final static Integer NORMAl = 0;
-    private final static Integer ABNORMAL = 1;
+    private final static Integer ABNORMAL = -1;
 
     /**
      * 设置检修日期
