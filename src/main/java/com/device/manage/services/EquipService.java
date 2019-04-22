@@ -109,13 +109,45 @@ public class EquipService {
 
     /**
      * 检测设备是否为异常状态
+     *
      * @param id
      * @return
      */
     public Boolean equipAbNormal(Integer id) {
         EquipModel model = repository.findById(id).orElse(null);
-        if(model != null && model.getState().equals(EquipModel.getABNORMAL())){
+        if (model != null && model.getState().equals(EquipModel.getABNORMAL())) {
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检测设备是否已经被报废
+     *
+     * @param id
+     * @return
+     */
+    public Boolean hasDestroy(Integer id) {
+        EquipModel model = repository.findById(id).orElse(null);
+        if (model != null && model.getState().equals(EquipModel.getDESTROY())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断此设备是否可以进行报废流程
+     * @param id 设备id
+     * @return Boolean
+     */
+    public Object couldDestroy(Integer id) {
+        EquipModel model = repository.findById(id).orElse(null);
+        if (model != null) {
+            Integer state = model.getState();
+            if(state.equals(EquipModel.getNORMAL()) || state.equals(EquipModel.getDESTROY())) {
+                return false;
+            }
+            return model;
         }
         return false;
     }
