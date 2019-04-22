@@ -90,8 +90,6 @@ public class EquipService {
                 state.equals(EquipModel.getREPAIR()) ||
                 state.equals(EquipModel.getDESTORY())
         ) {
-            System.out.println(id);
-            System.out.println(state);
             repository.updateState(id, state);
         } else {
             throw new SelfExcUtils(400, "不能识别的设备运行码");
@@ -106,5 +104,18 @@ public class EquipService {
      */
     public Boolean equipExist(Integer id) {
         return repository.existsById(id);
+    }
+
+    /**
+     * 检测设备是否为异常状态
+     * @param id
+     * @return
+     */
+    public Boolean equipAbNormal(Integer id) {
+        EquipModel model = repository.findById(id).orElse(null);
+        if(model != null && model.getState().equals(EquipModel.getABNORMAL())){
+            return true;
+        }
+        return false;
     }
 }
