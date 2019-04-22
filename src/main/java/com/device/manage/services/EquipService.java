@@ -88,7 +88,8 @@ public class EquipService {
     public void changeState(Integer id, Integer state) throws SelfExcUtils {
         if (state.equals(EquipModel.getABNORMAL()) ||
                 state.equals(EquipModel.getREPAIR()) ||
-                state.equals(EquipModel.getDESTORY())
+                state.equals(EquipModel.getDESTROY()) ||
+                state.equals(EquipModel.getNORMAL())
         ) {
             repository.updateState(id, state);
         } else {

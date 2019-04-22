@@ -39,4 +39,16 @@ public class RepairAction {
         repairService.addRepair(model);
         return ResponseUtils.success("设备维修记录添加成功", null);
     }
+
+    @PostMapping("/finish")
+    public ResponseAspect finish(
+            @RequestParam("userId") Integer userId,
+            RepairModel model
+    ) {
+        if(model.getFee() == null) {
+            return ResponseUtils.error(400, "维修费用不能为空");
+        }
+        repairService.update(model);
+        return ResponseUtils.success("设备交付完成", null);
+    }
 }

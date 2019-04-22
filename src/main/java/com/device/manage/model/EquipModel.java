@@ -50,8 +50,9 @@ public class EquipModel {
     private Integer state = 0;
 
     private final static Integer ABNORMAL = -1;
+    private final static Integer NORMAL = 0;
     private final static Integer REPAIR = 1;
-    private final static Integer DESTORY = 2;
+    private final static Integer DESTROY = 2;
 
     public Integer getId() {
         return id;
@@ -129,11 +130,15 @@ public class EquipModel {
         return ABNORMAL;
     }
 
+    public static Integer getNORMAL() {
+        return NORMAL;
+    }
+
     public static Integer getREPAIR() {
         return REPAIR;
     }
 
-    public static Integer getDESTORY() {
-        return DESTORY;
+    public static Integer getDESTROY() {
+        return DESTROY;
     }
 }

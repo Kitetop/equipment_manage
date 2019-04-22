@@ -34,7 +34,7 @@ public class RepairAspect {
         }
         throw new SelfExcUtils(400, "没有操作权限");
     }
-    @Before("execution(public * com.device.manage.action.RepairAction.addRepair(..))")
+    @Before("execution(public * com.device.manage.action.RepairAction.*(..))")
     private void initModel(JoinPoint point)
     {
         RepairModel model = (RepairModel) point.getArgs()[1];

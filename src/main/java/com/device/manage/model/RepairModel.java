@@ -33,6 +33,9 @@ public class RepairModel {
     @Column(name = "pre_finishdate")
     private String finishDate;
 
+    @Column(name = "repair_fee")
+    private Double fee;
+
     @NotNull(message = "维修人员信息不能为空")
     @Column(name = "repair_man")
     private String repair;
@@ -89,6 +92,14 @@ public class RepairModel {
 
     public void setFinishDate(String finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public Double getFee() {
+        return fee;
+    }
+
+    public void setFee(Double fee) {
+        this.fee = fee;
     }
 
     public String getRepair() {
