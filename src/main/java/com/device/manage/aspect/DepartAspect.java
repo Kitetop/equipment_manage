@@ -30,6 +30,6 @@ public class DepartAspect {
         if (userService.checkType((Integer) point.getArgs()[0])) {
             return point.proceed();
         }
-        return ResponseUtils.error(403, "没有操作权限");
+        return ResponseUtils.error(400, "没有操作权限");
     }
 }

@@ -4,6 +4,8 @@ import com.device.manage.model.DepartModel;
 import com.device.manage.repository.DepartRepository;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +20,11 @@ public class DepartService {
     @Autowired
     private DepartRepository departRepository;
 
+    /**
+     * 增加部门
+     * @param departModel
+     * @throws SelfExcUtils
+     */
     public void addDepart(DepartModel departModel) throws SelfExcUtils
     {
         checkRepeat(departModel.getDepart());
@@ -35,5 +42,9 @@ public class DepartService {
         if (departModel != null) {
             throw new SelfExcUtils(400, "部门已存在，无需重复添加");
         }
+    }
+
+    public Page findAll(Pageable pageable) {
+        return departRepository.findAll(pageable);
     }
 }

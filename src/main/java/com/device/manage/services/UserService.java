@@ -5,7 +5,14 @@ import com.device.manage.repository.DepartRepository;
 import com.device.manage.repository.UserRepository;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -92,5 +99,36 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public Page findByQuery(Object query, Pageable pageable) {
+        if(query == null) {
+            return userRepository.findAll(pageable);
+        }
+        return userRepository.findByQuery(((String)query).trim(), pageable);
+    }
+
+    /**
+     * 对查询到的数据进行选择性的返回显示
+     * @param users
+     * @return
+     */
+    public List formateDate(List users) {
+        List results = new ArrayList();
+        String type = "普通员工";
+        UserModel model;
+        for(Object user : users) {
+            Map<String, Object> result = new HashMap<>();
+            model =(UserModel) user;
+            result.put("id", model.getId());
+            result.put("account", model.getAccount());
+            result.put("username", model.getUsername());
+            if(model.getType().equals(UserModel.ADMINER_USER)) {
+                type = "管理员";
+            }
+            result.put("type", type);
+            results.add(result);
+        }
+        return results;
     }
 }

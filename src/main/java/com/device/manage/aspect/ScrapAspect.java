@@ -24,10 +24,11 @@ public class ScrapAspect {
     private UserService userService;
 
     @Pointcut("execution(public * com.device.manage.action.ScrapAction.*(..))")
-    private void checkAdmin(){}
+    private void checkAdmin() {
+    }
 
     @Around("checkAdmin()")
-    private Object beforeAdd(ProceedingJoinPoint point) throws Throwable{
+    private Object beforeAdd(ProceedingJoinPoint point) throws Throwable {
         Integer userId = (Integer) point.getArgs()[0];
         if (userService.checkType(userId)) {
             return point.proceed();
@@ -37,6 +38,7 @@ public class ScrapAspect {
 
     /**
      * 设置报废时间
+     *
      * @param point
      */
     @Before("execution(public * com.device.manage.action.ScrapAction.addScrap(..))")
