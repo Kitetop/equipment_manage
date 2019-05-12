@@ -1,5 +1,6 @@
 package com.device.manage.services;
 
+import com.device.manage.model.DepartModel;
 import com.device.manage.model.UserModel;
 import com.device.manage.repository.DepartRepository;
 import com.device.manage.repository.UserRepository;
@@ -26,8 +27,7 @@ public class UserService {
     @Autowired
     private DepartRepository departRepository;
 
-    public UserModel setColum(UserModel user, String key, Object value)
-    {
+    public UserModel setColum(UserModel user, String key, Object value) {
         switch (key) {
             case "username":
                 user.setUsername((String) value);
@@ -36,7 +36,7 @@ public class UserService {
                 user.setPassword((String) value);
                 break;
             case "type":
-                user.setType((String)value);
+                user.setType((String) value);
                 break;
             case "depart":
                 user.setDepart((Integer) value);
@@ -48,16 +48,13 @@ public class UserService {
 
     /**
      * 增加用户
+     *
      * @param userModel
      * @throws SelfExcUtils
      */
-    public void addUser(UserModel userModel) throws SelfExcUtils
-    {
+    public void addUser(UserModel userModel) throws SelfExcUtils {
         addRepeat(userModel);
-        if(checkDepart(userModel.getDepart())) {
-            if(userModel.getType() == null) {
-                userModel.setType(UserModel.NORMAL_USER);
-            }
+        if (checkDepart(userModel.getDepart())) {
             userRepository.save(userModel);
         } else {
             throw new SelfExcUtils(400, "非法的部门");
@@ -66,68 +63,90 @@ public class UserService {
 
     /**
      * 避免重复注册
+     *
      * @param userModel
      * @throws SelfExcUtils
      */
-    public void addRepeat(UserModel userModel) throws SelfExcUtils
-    {
+    public void addRepeat(UserModel userModel) throws SelfExcUtils {
         UserModel model = userRepository.findByAccount(userModel.getAccount()).orElse(null);
-        if(model != null) {
+        if (model != null) {
             throw new SelfExcUtils(400, "账号已经存在，可以直接登录");
         }
     }
 
     /**
      * 判断此部门id是否存在
+     *
      * @param depart
      * @return
      */
-    public Boolean checkDepart(Integer depart)
-    {
+    public Boolean checkDepart(Integer depart) {
         return departRepository.existsById(depart);
     }
 
     /**
+     * 获得部门的名称
+     *
+     * @param id
+     * @return
+     * @throws SelfExcUtils
+     */
+    public String getDepartName(Integer id) throws SelfExcUtils {
+        DepartModel departModel = departRepository.findById(id).orElse(null);
+        if (departModel != null) {
+            return departModel.getDepart();
+        } else {
+            throw new SelfExcUtils(400, "非法的部门编号");
+        }
+    }
+
+    /**
      * 判断此id的用户是否是管理员
+     *
      * @param id 用户id
      * @return Boolean
      */
-    public Boolean checkType(Integer id)
-    {
+    public Boolean checkType(Integer id) {
         UserModel userModel = userRepository.findById(id).orElse(null);
-        if(userModel != null && userModel.getType().equals(UserModel.ADMINER_USER)) {
+        if (userModel != null && userModel.getType().equals(UserModel.ADMINER_USER)) {
             return true;
         }
         return false;
     }
 
     public Page findByQuery(Object query, Pageable pageable) {
-        if(query == null) {
+        if (query == null) {
             return userRepository.findAll(pageable);
         }
-        return userRepository.findByQuery(((String)query).trim(), pageable);
+        return userRepository.findByQuery(((String) query).trim(), pageable);
     }
 
     /**
      * 对查询到的数据进行选择性的返回显示
+     *
      * @param users
      * @return
      */
-    public List formateDate(List users) {
-        List results = new ArrayList();
-        String type = "普通员工";
+    public Map formateDate(List users) {
+        Map results = new HashMap();
         UserModel model;
-        for(Object user : users) {
+        int index = 0;
+        for (Object user : users) {
+            String type = "检修员";
             Map<String, Object> result = new HashMap<>();
-            model =(UserModel) user;
+            model = (UserModel) user;
             result.put("id", model.getId());
             result.put("account", model.getAccount());
             result.put("username", model.getUsername());
-            if(model.getType().equals(UserModel.ADMINER_USER)) {
+            result.put("depart", getDepartName(model.getDepart()));
+            if (model.getType().equals(UserModel.ADMINER_USER)) {
                 type = "管理员";
+            } else if (model.getType().equals(UserModel.REPAIR_USER)) {
+                type = "维修员";
             }
             result.put("type", type);
-            results.add(result);
+            results.put(index, result);
+            index++;
         }
         return results;
     }

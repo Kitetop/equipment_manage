@@ -25,6 +25,7 @@ import java.util.Map;
  * @version Release: v1.0
  * Date: 2019/04/11
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 public class UserAction {
@@ -72,18 +73,15 @@ public class UserAction {
      */
     @GetMapping("/list")
     public ResponseAspect userList(@RequestParam("userId") Integer userId,
-                                   @RequestParam("query") String query,
+                                   @RequestParam(value = "query",required = false) String query,
                                    @RequestParam("limit") Integer limit,
                                    @RequestParam("page") Integer page) {
         page = page < 1 ? PAGE : page;
         limit = limit < 1 ? LIMIT : limit;
         Pageable pageable = new PageRequest(page -1, limit);
         Page users = userService.findByQuery(query, pageable);
-        List results = userService.formateDate(users.getContent());
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", users.getTotalPages());
-        map.put("number", users.getNumberOfElements());
-        results.add(map);
+        Map results = userService.formateDate(users.getContent());
+        results.put("total", users.getTotalElements());
         return ResponseUtils.success("查询成功", results);
     }
 

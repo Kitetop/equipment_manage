@@ -29,11 +29,13 @@ public class UserModel {
     private String password;
     @NotNull(message = "账户不能为空")
     private String account;
+    @NotNull(message = "用户类型不能为空")
     private String type;
     @NotNull(message = "请设置部门")
     private Integer depart;
-    public static final String NORMAL_USER = "1";
+    public static final String CHECKER_USER = "1";
     public static final String ADMINER_USER = "2";
+    public static final String REPAIR_USER = "3";
 
     public Integer getDepart() {
         return depart;
@@ -81,7 +83,10 @@ public class UserModel {
     }
 
     public void setType(String type) {
-        if(!type.trim().equals(NORMAL_USER) && !type.trim().equals(ADMINER_USER)) {
+        if (!type.trim().equals(CHECKER_USER)
+                && !type.trim().equals(ADMINER_USER)
+                && !type.trim().equals(REPAIR_USER)
+        ) {
             return;
         }
         this.type = type;
