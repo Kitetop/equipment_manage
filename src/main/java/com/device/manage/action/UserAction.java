@@ -39,8 +39,11 @@ public class UserAction {
     private final static Integer LIMIT = 10;
     private final static Integer PAGE = 1;
 
-    @PostMapping("/register")
-    public ResponseAspect addUser(@Valid UserModel userModel, BindingResult result) {
+    @PostMapping("/add")
+    public ResponseAspect addUser(
+            @RequestParam("userId") Integer userId,
+            @Valid UserModel userModel,
+            BindingResult result) {
         if (result.hasErrors()) {
             String message = result.getFieldError().getDefaultMessage();
             return ResponseUtils.error(400, message);
@@ -87,16 +90,16 @@ public class UserAction {
 
 
     @PostMapping("/delete")
-    public Map delete(@RequestParam Integer id) {
-        Map messageMap = new HashMap<String, String>();
+    public ResponseAspect delete(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("id") Integer id) {
         userModel = repository.findById(id).orElse(null);
         if (userModel == null) {
-            messageMap.put("message", "This user not exist");
-            return messageMap;
+            return ResponseUtils.error(400, "用户不存在，不需要删除");
+        } else {
+            repository.deleteById(id);
+            return ResponseUtils.success("删除成功",null);
         }
-        repository.deleteById(id);
-        messageMap.put("message", userModel.getUsername() + " delete success");
-        return messageMap;
     }
 
     @PostMapping("/update")

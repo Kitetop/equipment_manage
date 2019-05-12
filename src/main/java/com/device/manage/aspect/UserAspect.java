@@ -20,8 +20,28 @@ public class UserAspect {
     private UserService userService;
 
     @Before("execution(public * com.device.manage.action.UserAction.userList(..))")
-    protected void checkAdmin(JoinPoint point) {
+    protected void beforeUserList(JoinPoint point) {
         Integer userId = (Integer)point.getArgs()[0];
+        this.checkAdmin(userId);
+    }
+
+    @Before("execution(public * com.device.manage.action.UserAction.delete(..))")
+    protected void beforeUserDelete(JoinPoint point) {
+        Integer userId = (Integer)point.getArgs()[0];
+        this.checkAdmin(userId);
+    }
+
+    @Before("execution(public * com.device.manage.action.UserAction.addUser(..))")
+    protected void beforeUserAdd(JoinPoint point) {
+        Integer userId = (Integer)point.getArgs()[0];
+        this.checkAdmin(userId);
+    }
+
+    /**
+     * 检测是否是管理员的功能函数
+     * @param userId
+     */
+    private void checkAdmin(Integer userId) {
         if(!userService.checkType(userId)) {
             throw new SelfExcUtils(400, "没有操作权限");
         }
