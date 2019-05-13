@@ -6,7 +6,12 @@ import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -44,7 +49,32 @@ public class DepartService {
         }
     }
 
-    public Page findAll(Pageable pageable) {
-        return departRepository.findAll(pageable);
+    public List<DepartModel> findAll(Sort sort) {
+        return departRepository.findAll(sort);
+    }
+
+    public List<DepartModel> search(String query) {
+        return departRepository.search(query);
+    }
+
+    /**
+     * 设置数据的组装格式
+     * @param departs
+     * @return
+     */
+    public Map<Integer, Object> formateData(List departs)
+    {
+        Map<Integer, Object> results = new HashMap<>();
+        DepartModel model;
+        int index = 0;
+        for(Object depart : departs) {
+            Map<String, Object> result = new HashMap<>();
+            model = (DepartModel) depart;
+            result.put("id", model.getId());
+            result.put("depart", model.getDepart());
+            results.put(index, result);
+            index++;
+    }
+        return results;
     }
 }

@@ -6,16 +6,11 @@ import com.device.manage.services.DepartService;
 import com.device.manage.utils.ResponseUtils;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +20,7 @@ import java.util.Map;
  * Date: 2019/04/16
  * 对部门操作的action
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/depart")
 public class DepartAction {
@@ -50,22 +46,24 @@ public class DepartAction {
 
     @GetMapping("/list")
     public ResponseAspect departList(
-            @RequestParam("userId") Integer userId,
-            @RequestParam("limit") Integer limit,
-            @RequestParam("page") Integer page
+            @RequestParam("userId") Integer userId
     ) {
-        page = page < 1 ? PAGE : page;
-        limit = limit < 1 ? LIMIT : limit;
-        Sort.Order order = new Sort.Order(Sort.Direction.DESC, "id");
+        Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
         Sort sort = new Sort(order);
-        Pageable pageable = new PageRequest(page -1, limit, sort);
-        Page departs = departService.findAll(pageable);
-        List list = new ArrayList();
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", departs.getTotalPages());
-        map.put("number", departs.getNumberOfElements());
-        list.add(departs.getContent());
-        list.add(map);
-        return ResponseUtils.success("查询成功", list);
+        List departs = departService.findAll(sort);
+        Map results = departService.formateData(departs);
+        return ResponseUtils.success("查询成功", results);
+    }
+
+    @GetMapping("/search")
+    public ResponseAspect search(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("query") String query
+    ) {
+        Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
+        Sort sort = new Sort(order);
+        List departs = departService.search(query);
+        Map results = departService.formateData(departs);
+        return ResponseUtils.success("查询成功", results);
     }
 }
