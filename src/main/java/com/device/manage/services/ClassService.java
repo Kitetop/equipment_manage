@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +35,16 @@ public class ClassService {
         return classRepository.existsById(id);
     }
 
+    @Transactional
     public void update(ClassModel classModel) throws SelfExcUtils {
         String name = classModel.getName();
         ClassModel model = classRepository.findById(classModel.getId()).orElse(null);
-        if (!model.getName().equals(name) && checkRepeat(name)) {
+        model.setName(name);
+        model.setDesc(classModel.getDesc());
+        classRepository.save(model);
+        if (classRepository.countByName(name) != 1) {
             throw new SelfExcUtils(400, "已存在相同的种类名，请重新设置要修改的种类信息");
         }
-        model.update(classModel);
-        classRepository.save(model);
     }
 
     /**

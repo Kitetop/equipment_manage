@@ -30,7 +30,6 @@ public class EquipModel {
     @Column(name = "manufacture")
     private String facture;
 
-    @NotNull(message = "价格信息不能为空")
     private Double price;
 
     //生产日期

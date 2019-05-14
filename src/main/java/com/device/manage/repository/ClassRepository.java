@@ -19,4 +19,5 @@ public interface ClassRepository extends JpaRepository<ClassModel, Integer> {
 
     @Query(value = "select * from manage_class where class_name like %:query% order by id asc ", nativeQuery = true)
     Page<ClassModel> search(String query, Pageable pageable);
+    Integer countByName(String name);
 }
