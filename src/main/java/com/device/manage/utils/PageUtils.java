@@ -18,9 +18,12 @@ final public class PageUtils {
     /**
      * 默认的构造函数
      */
-    public PageUtils() {}
+    public PageUtils() {
+    }
+
     /**
      * 设置默认的页数、页面条数以及是否进行分页
+     *
      * @param page
      * @param limit
      */
@@ -32,6 +35,7 @@ final public class PageUtils {
 
     /**
      * 重载构造函数，不进行排序
+     *
      * @param page
      * @param limit
      */
@@ -44,24 +48,25 @@ final public class PageUtils {
      * 验证传递过来的数据是否合理
      * @param page
      * @param limit
-     * @return
      */
-    public Boolean validata(Object page, Object limit) {
-        if((page instanceof Integer) && (limit instanceof Integer)) {
-            if((Integer)page < 1 || (Integer)limit < 1) {
-                return false;
+    public void checkData(String page, String limit) {
+        try {
+            Integer p = Integer.parseInt(page);
+            Integer l = Integer.parseInt(limit);
+            if (p < 1 || l < 1) {
+                throw new SelfExcUtils(400, "非法的页码、条数限制");
             } else {
-                this.page = (Integer) page;
-                this.limit = (Integer) limit;
-                return true;
+                this.page = p;
+                this.limit = l;
             }
-        } else {
-            return false;
+        } catch (NumberFormatException e) {
+            throw new SelfExcUtils(400, e.getMessage());
         }
     }
 
     /**
      * 获得分页的根据
+     *
      * @param sort
      * @return
      */

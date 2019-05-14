@@ -34,12 +34,11 @@ public class DepartAction {
     private final static Integer PAGE = 1;
 
     @PostMapping("/add")
-    public ResponseAspect add(@RequestParam ("userId") Integer id,
+    public ResponseAspect add(@RequestParam("userId") Integer id,
                               @Valid DepartModel departModel,
                               BindingResult result)
-            throws SelfExcUtils
-    {
-        if(result.hasErrors()) {
+            throws SelfExcUtils {
+        if (result.hasErrors()) {
             String message = result.getFieldError().getDefaultMessage();
             return ResponseUtils.error(400, message);
         }
@@ -50,14 +49,11 @@ public class DepartAction {
     @GetMapping("/list")
     public ResponseAspect departList(
             @RequestParam("userId") Integer userId,
-            @RequestParam("page") Object page,
-            @RequestParam("limit") Object limit
+            @RequestParam("page") String page,
+            @RequestParam("limit") String limit
     ) {
         PageUtils pageUtils = new PageUtils();
-        if(!pageUtils.validata(page, limit)) {
-            limit = 5;
-            pageUtils = new PageUtils(1, 5);
-        }
+        pageUtils.checkData(page, limit);
         Sort.Order order = new Sort.Order(Sort.Direction.ASC, "id");
         Sort sort = new Sort(order);
         Pageable pageable = pageUtils.getPageable(sort);
@@ -76,5 +72,25 @@ public class DepartAction {
         List departs = departService.search(query);
         Map results = departService.formateData(departs);
         return ResponseUtils.success("查询成功", results);
+    }
+
+    @PostMapping("/delete")
+    public ResponseAspect delete(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("id") Integer id) {
+        return departService.delete(id);
+    }
+
+    @PostMapping("/update")
+    public ResponseAspect update(
+            @RequestParam("userId") Integer userId,
+            @Valid DepartModel departModel,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            String message = result.getFieldError().getDefaultMessage();
+            return ResponseUtils.error(400, message);
+        }
+        return departService.update(departModel);
     }
 }
