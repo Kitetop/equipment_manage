@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Kitetop <1363215999@qq.com>
  * @version Release: v1.0
@@ -37,46 +41,18 @@ public class EquipService {
     }
 
     /**
-     * 查询设备表中的所有信息
-     *
-     * @param pageable
-     * @return
-     */
-    public Page<EquipModel> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    /**
-     * 根据设备种类查找分页
-     *
-     * @param id
-     * @param pageable
-     * @return
-     */
-    public Page<EquipModel> findByClass(Integer id, Pageable pageable) {
-        return repository.findByClassId(id, pageable);
-    }
-
-    /**
-     * 根据设备型号查找分页
-     *
-     * @param type
-     * @param pageable
-     * @return
-     */
-    public Page<EquipModel> findByType(String type, Pageable pageable) {
-        return repository.findByType(type, pageable);
-    }
-
-    /**
-     * 查询状态异常的设备
+     * 根据设备的状态查询设备
      *
      * @param state
      * @param pageable
      * @return
      */
-    public Page<EquipModel> findAbNormal(Integer state, Pageable pageable) {
-        return repository.findAbNormal(state, pageable);
+    private Page<EquipModel> findEquipByState(Integer state, Pageable pageable) {
+        return repository.findEquipByState(state, pageable);
+    }
+
+    private Page<EquipModel> findEquip(Pageable pageable, String query, Integer state) {
+        return repository.findEquip(query, state, pageable);
     }
 
     /**
@@ -86,15 +62,8 @@ public class EquipService {
      * @param state
      */
     public void changeState(Integer id, Integer state) throws SelfExcUtils {
-        if (state.equals(EquipModel.getABNORMAL()) ||
-                state.equals(EquipModel.getREPAIR()) ||
-                state.equals(EquipModel.getDESTROY()) ||
-                state.equals(EquipModel.getNORMAL())
-        ) {
-            repository.updateState(id, state);
-        } else {
-            throw new SelfExcUtils(400, "不能识别的设备运行码");
-        }
+        this.checkState(state);
+        repository.updateState(id, state);
     }
 
     /**
@@ -122,21 +91,8 @@ public class EquipService {
     }
 
     /**
-     * 检测设备是否已经被报废
-     *
-     * @param id
-     * @return
-     */
-    public Boolean hasDestroy(Integer id) {
-        EquipModel model = repository.findById(id).orElse(null);
-        if (model != null && model.getState().equals(EquipModel.getDESTROY())) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 判断此设备是否可以进行报废流程
+     *
      * @param id 设备id
      * @return Boolean
      */
@@ -144,11 +100,80 @@ public class EquipService {
         EquipModel model = repository.findById(id).orElse(null);
         if (model != null) {
             Integer state = model.getState();
-            if(state.equals(EquipModel.getNORMAL()) || state.equals(EquipModel.getDESTROY())) {
+            if (state.equals(EquipModel.getNORMAL()) || state.equals(EquipModel.getDESTROY())) {
                 return false;
             }
             return model;
         }
         return false;
+    }
+
+    /**
+     * 检测设置的设备状态是否合理
+     *
+     * @param state
+     * @return
+     */
+    private Boolean checkState(Integer state) {
+        if (state.equals(EquipModel.getABNORMAL()) ||
+                state.equals(EquipModel.getREPAIR()) ||
+                state.equals(EquipModel.getDESTROY()) ||
+                state.equals(EquipModel.getNORMAL())
+        ) {
+            return true;
+        } else {
+            throw new SelfExcUtils(400, "不能识别的设备运行码");
+        }
+    }
+
+    /**
+     * 根据条件查找设备信息
+     *
+     * @param pageable
+     * @param query
+     * @param state
+     * @return
+     */
+    public Page<EquipModel> findAllEquip(Pageable pageable, String query, Integer state) {
+        this.checkState(state);
+        if (query.isEmpty()) {
+            return this.findEquipByState(state, pageable);
+        } else {
+            return this.findEquip(pageable, query, state);
+        }
+    }
+
+    /**
+     * 设置数据的组装格式
+     *
+     * @param equips
+     * @return
+     */
+    public Map<Integer, Object> formateData(List equips) {
+        Map<Integer, Object> results = new HashMap<>();
+        EquipModel model;
+        int index = 0;
+        for (Object equip : equips) {
+            Map<String, Object> result = new HashMap<>();
+            model = (EquipModel) equip;
+            result.put("id", model.getId());
+            Integer classId = model.getClassId();
+            result.put("className", service.getClassName(classId));
+            result.put("type", model.getType());
+            result.put("facture", model.getFacture());
+            result.put("proyDate", model.getProyDate());
+            if (model.getState().equals(EquipModel.getDESTROY())) {
+                result.put("state", "报废");
+            } else if (model.getState().equals(EquipModel.getNORMAL())) {
+                result.put("state", "正常");
+            } else if (model.getState().equals(EquipModel.getABNORMAL())) {
+                result.put("state", "异常");
+            }else {
+                result.put("state", "维修");
+            }
+            results.put(index, result);
+            index++;
+        }
+        return results;
     }
 }

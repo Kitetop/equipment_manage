@@ -18,7 +18,7 @@ import java.util.Date;
 public class ScrapModel {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull(message = "设备id不能为空")

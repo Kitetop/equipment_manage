@@ -26,6 +26,10 @@ public class ClassService {
     @Autowired
     private ClassRepository classRepository;
 
+    /**
+     * 增加设备种类
+     * @param classModel
+     */
     public void addClass(ClassModel classModel) {
         if (checkRepeat(classModel.getName())) {
             throw new SelfExcUtils(400, "该种类已存在，请勿重复添加");
@@ -33,10 +37,20 @@ public class ClassService {
         classRepository.save(classModel);
     }
 
+    /**
+     * 判断设备种类是否已经存在
+     * @param id
+     * @return
+     */
     public Boolean existClass(Integer id) {
         return classRepository.existsById(id);
     }
 
+    /**
+     * 更新设备种类信息
+     * @param classModel
+     * @throws SelfExcUtils
+     */
     @Transactional
     public void update(ClassModel classModel) throws SelfExcUtils {
         String name = classModel.getName();
@@ -58,6 +72,12 @@ public class ClassService {
         return classRepository.findAll(pageable);
     }
 
+    /**
+     * 根据设备种类名称查找设备种类
+     * @param query
+     * @param pageable
+     * @return
+     */
     public Page<ClassModel> search(String query, Pageable pageable) {
         return classRepository.search(query, pageable);
     }
@@ -110,5 +130,19 @@ public class ClassService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 根据设备种类id获得种类名
+     * @param id
+     * @return
+     */
+    public String getClassName(Integer id) {
+        ClassModel classModel = classRepository.findById(id).orElse(null);
+        if(classModel != null) {
+            return classModel.getName();
+        } else {
+            throw new SelfExcUtils(400, "此设备种类不存在");
+        }
     }
 }

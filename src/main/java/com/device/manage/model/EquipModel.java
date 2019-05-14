@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "manage_info")
 public class EquipModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull(message = "所属种类不能为空")

@@ -4,11 +4,7 @@ import com.device.manage.utils.SelfExcUtils;
 import org.springframework.stereotype.Component;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +20,7 @@ import java.util.Date;
 @Table(name = "manage_examine")
 public class ExamineModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotNull(message = "设备id不能为空")
     @Column(name = "equip_id")

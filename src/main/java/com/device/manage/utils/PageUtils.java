@@ -75,6 +75,15 @@ final public class PageUtils {
         return pageable;
     }
 
+    /**
+     * 重载函数，获得不排序的分页设置
+     * @return
+     */
+    public Pageable getPageable() {
+        Pageable pageable = new PageRequest(this.page - 1, this.limit);
+        return pageable;
+    }
+
 
     public Integer getPage() {
         return page;

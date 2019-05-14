@@ -3,10 +3,7 @@ package com.device.manage.model;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 
@@ -20,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "manage_user")
 public class UserModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull(message = "用户名不能为空")

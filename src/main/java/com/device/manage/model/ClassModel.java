@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "manage_class")
 public class ClassModel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotNull(message = "种类名称不能为空")
     @Column(name = "class_name")

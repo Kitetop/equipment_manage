@@ -18,7 +18,7 @@ import java.util.Date;
 public class RepairModel {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull(message = "检修设备id不能为空")
