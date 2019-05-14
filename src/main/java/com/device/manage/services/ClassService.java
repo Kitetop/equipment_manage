@@ -1,8 +1,10 @@
 package com.device.manage.services;
 
+import com.device.manage.aspect.ResponseAspect;
 import com.device.manage.model.ClassModel;
 import com.device.manage.model.DepartModel;
 import com.device.manage.repository.ClassRepository;
+import com.device.manage.utils.ResponseUtils;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -79,6 +81,21 @@ public class ClassService {
             index++;
         }
         return results;
+    }
+
+    /**
+     * 删除指定id的种类
+     * @param id
+     * @return
+     */
+    public ResponseAspect delete(Integer id) {
+        ClassModel classModel = classRepository.findById(id).orElse(null);
+        if (classModel == null) {
+            return ResponseUtils.error(400, "种类不存在，无法进行删除操作");
+        } else {
+            classRepository.deleteById(id);
+            return ResponseUtils.success("删除成功", null);
+        }
     }
 
     /**

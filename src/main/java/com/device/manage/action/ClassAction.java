@@ -75,6 +75,14 @@ public class ClassAction {
         return ResponseUtils.success("查询成功", results);
     }
 
+    /**
+     * 根据设备种类名称查找种类
+     * @param userId
+     * @param query
+     * @param page
+     * @param limit
+     * @return
+     */
     @GetMapping("/search")
     public ResponseAspect search(
             @RequestParam("userId") Integer userId,
@@ -92,5 +100,13 @@ public class ClassAction {
         results.put("total", Class.getTotalElements());
         results.put("limit", limit);
         return ResponseUtils.success("查询成功", results);
+    }
+
+    @PostMapping("/delete")
+    public ResponseAspect delete(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("id") Integer id
+    ) {
+        return classService.delete(id);
     }
 }
