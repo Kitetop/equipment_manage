@@ -1,10 +1,17 @@
 package com.device.manage.services;
 
 import com.device.manage.model.ClassModel;
+import com.device.manage.model.DepartModel;
 import com.device.manage.repository.ClassRepository;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -35,6 +42,40 @@ public class ClassService {
         }
         model.update(classModel);
         classRepository.save(model);
+    }
+
+    /**
+     * 获得全部的种类数据
+     * @param pageable
+     * @return
+     */
+    public Page findAll(Pageable pageable) {
+        return classRepository.findAll(pageable);
+    }
+
+    public Page<ClassModel> search(String query, Pageable pageable) {
+        return classRepository.search(query, pageable);
+    }
+
+    /**
+     * 设置数据的组装格式
+     * @param Class
+     * @return
+     */
+    public Map<Integer, Object> formateData(List Class) {
+        Map<Integer, Object> results = new HashMap<>();
+        ClassModel model;
+        int index = 0;
+        for (Object type : Class) {
+            Map<String, Object> result = new HashMap<>();
+            model = (ClassModel) type;
+            result.put("id", model.getId());
+            result.put("class", model.getName());
+            result.put("desc", model.getDesc());
+            results.put(index, result);
+            index++;
+        }
+        return results;
     }
 
     /**
