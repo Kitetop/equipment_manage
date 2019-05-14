@@ -22,6 +22,7 @@ import java.util.Map;
  * Date: 2019/04/19
  * 设备信息表的action层
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/equip")
 public class EquipAction {
