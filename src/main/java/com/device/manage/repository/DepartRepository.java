@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface DepartRepository extends JpaRepository<DepartModel, Integer> {
     Optional<DepartModel> findByDepart(String depart);
 
-    @Query(value = "select * from manage_depart where depart like %:query%", nativeQuery = true)
+    @Query(value = "select * from manage_depart where depart like %:query% order by id asc ", nativeQuery = true)
     List<DepartModel> search(String query);
 }

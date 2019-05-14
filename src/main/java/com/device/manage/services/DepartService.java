@@ -49,10 +49,20 @@ public class DepartService {
         }
     }
 
-    public List<DepartModel> findAll(Sort sort) {
-        return departRepository.findAll(sort);
+    /**
+     * 获得分页数据
+     * @param pageable
+     * @return
+     */
+    public Page<DepartModel> findAll(Pageable pageable) {
+        return departRepository.findAll(pageable);
     }
 
+    /**
+     * 根据部门的名称查找部门
+     * @param query
+     * @return
+     */
     public List<DepartModel> search(String query) {
         return departRepository.search(query);
     }

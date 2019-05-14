@@ -1,6 +1,8 @@
 package com.device.manage.utils;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -56,6 +58,16 @@ final public class PageUtils {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 获得分页的根据
+     * @param sort
+     * @return
+     */
+    public Pageable getPageable(Sort sort) {
+        Pageable pageable = new PageRequest(this.page - 1, this.limit, sort);
+        return pageable;
     }
 
 
