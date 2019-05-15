@@ -30,7 +30,7 @@ public class EquipModel {
     @Column(name = "manufacture")
     private String facture;
 
-    private Double price;
+    private Double price = 50.00;
 
     //生产日期
     @Column(name = "proydate")

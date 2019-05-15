@@ -61,14 +61,14 @@ public class EquipAction {
      */
     @GetMapping("/list")
     public ResponseAspect listEquip(@RequestParam("userId") Integer userId,
-                                    @RequestParam("query") String query,
+                                    @RequestParam(value = "query", required = false) String query,
                                     @RequestParam("state") Integer state,
                                     @RequestParam("page") String page,
                                     @RequestParam("limit") String limit) {
         PageUtils pageUtils = new PageUtils();
         pageUtils.checkData(page, limit);
         Pageable pageable = pageUtils.getPageable();
-        Page<EquipModel> equips =service.findAllEquip(pageable, query.trim(), state);
+        Page<EquipModel> equips =service.findAllEquip(pageable, query, state);
         Map results = service.formateData(equips.getContent());
         results.put("total", equips.getTotalElements());
         results.put("limit", limit);

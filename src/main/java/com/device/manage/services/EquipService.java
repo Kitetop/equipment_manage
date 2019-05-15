@@ -115,10 +115,10 @@ public class EquipService {
      * @return
      */
     private Boolean checkState(Integer state) {
-        if (state.equals(EquipModel.getABNORMAL()) ||
+        if (state == EquipModel.getNORMAL()||
+                state.equals(EquipModel.getABNORMAL()) ||
                 state.equals(EquipModel.getREPAIR()) ||
-                state.equals(EquipModel.getDESTROY()) ||
-                state.equals(EquipModel.getNORMAL())
+                state.equals(EquipModel.getDESTROY())
         ) {
             return true;
         } else {
@@ -134,12 +134,12 @@ public class EquipService {
      * @param state
      * @return
      */
-    public Page<EquipModel> findAllEquip(Pageable pageable, String query, Integer state) {
+    public Page<EquipModel> findAllEquip(Pageable pageable, Object query, Integer state) {
         this.checkState(state);
-        if (query.isEmpty()) {
+        if (query == null) {
             return this.findEquipByState(state, pageable);
         } else {
-            return this.findEquip(pageable, query, state);
+            return this.findEquip(pageable, query.toString(), state);
         }
     }
 
@@ -168,7 +168,7 @@ public class EquipService {
                 result.put("state", "正常");
             } else if (model.getState().equals(EquipModel.getABNORMAL())) {
                 result.put("state", "异常");
-            }else {
+            } else {
                 result.put("state", "维修");
             }
             results.put(index, result);
