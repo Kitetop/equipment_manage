@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -21,38 +19,15 @@ public class RepairModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull(message = "检修设备id不能为空")
+    @NotNull(message = "维修设备id不能为空")
     @Column(name = "equip_id")
     private Integer equipId;
 
     private String reason;
-
-    @Column(name = "repair_date")
-    private String repairDate;
-
-    @Column(name = "pre_finishdate")
-    private String finishDate;
-
-    @Column(name = "repair_fee")
-    private Double fee;
-
     @NotNull(message = "维修人员信息不能为空")
     @Column(name = "repair_man")
-    private String repair;
-
-    /**
-     * 根据model层得信息判断设置哪一个字段的时间
-     */
-    public void setTime()
-    {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String time = format.format(new Date());
-        if(this.id == null) {
-            setRepairDate(time);
-        } else {
-            setFinishDate(time);
-        }
-    }
+    private Integer repair;
+    private Integer finish = 0;
 
     public Integer getId() {
         return id;
@@ -78,35 +53,19 @@ public class RepairModel {
         this.reason = reason;
     }
 
-    public String getRepairDate() {
-        return repairDate;
-    }
-
-    public void setRepairDate(String repairDate) {
-        this.repairDate = repairDate;
-    }
-
-    public String getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(String finishDate) {
-        this.finishDate = finishDate;
-    }
-
-    public Double getFee() {
-        return fee;
-    }
-
-    public void setFee(Double fee) {
-        this.fee = fee;
-    }
-
-    public String getRepair() {
+    public Integer getRepair() {
         return repair;
     }
 
-    public void setRepair(String repair) {
+    public void setRepair(Integer repair) {
         this.repair = repair;
+    }
+
+    public Integer getFinish() {
+        return finish;
+    }
+
+    public void setFinish(Integer finish) {
+        this.finish = finish;
     }
 }

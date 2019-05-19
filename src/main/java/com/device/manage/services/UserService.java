@@ -114,6 +114,20 @@ public class UserService {
         return false;
     }
 
+    /**
+     * 判断用户是否是维修员
+     * @param id
+     * @return
+     */
+    public Boolean checkRepair(Integer id) {
+        UserModel userModel = userRepository.findById(id).orElse(null);
+        if(userModel != null && userModel.getType().equals(UserModel.REPAIR_USER)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public Page findByQuery(Object query, Pageable pageable) {
         if (query == null) {
             return userRepository.findAll(pageable);

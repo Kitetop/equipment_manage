@@ -1,12 +1,14 @@
 package com.device.manage.services;
 
 import com.device.manage.model.EquipModel;
+import com.device.manage.model.RepairModel;
 import com.device.manage.repository.EquipRepository;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,8 @@ public class EquipService {
     private EquipRepository repository;
     @Autowired
     private ClassService service;
+    @Autowired
+    private RepairService repairService;
 
     /**
      * 新增设备
@@ -140,6 +144,38 @@ public class EquipService {
             return this.findEquipByState(state, pageable);
         } else {
             return this.findEquip(pageable, query.toString(), state);
+        }
+    }
+
+    /**
+     * 根据设备id查找设备信息
+     * @param id
+     * @return
+     */
+    public EquipModel findById(Integer id) {
+       EquipModel model = repository.findById(id).orElse(null);
+       if(model != null) {
+           return model;
+       }else {
+           throw new SelfExcUtils(404, "该设备不存在");
+       }
+    }
+
+    /**
+     * 维修设备
+     * @param id
+     */
+    @Transactional
+    public void RepairEquip(Integer id) {
+        if(equipAbNormal(id)) {
+            RepairModel repairModel = new RepairModel();
+            repository.updateState(id, EquipModel.getREPAIR());
+            repairModel.setEquipId(id);
+            repairModel.setRepair(0);
+            repairModel.setReason(null);
+            repairService.addRepair(repairModel);
+        } else {
+            throw new SelfExcUtils(400, "非法的设备，无法维修");
         }
     }
 

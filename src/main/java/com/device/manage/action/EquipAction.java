@@ -32,6 +32,7 @@ public class EquipAction {
 
     /**
      * 增加设备
+     *
      * @param userId
      * @param model
      * @param result
@@ -52,6 +53,7 @@ public class EquipAction {
 
     /**
      * 获得设备列表
+     *
      * @param userId
      * @param query
      * @param state
@@ -68,10 +70,23 @@ public class EquipAction {
         PageUtils pageUtils = new PageUtils();
         pageUtils.checkData(page, limit);
         Pageable pageable = pageUtils.getPageable();
-        Page<EquipModel> equips =service.findAllEquip(pageable, query, state);
+        Page<EquipModel> equips = service.findAllEquip(pageable, query, state);
         Map results = service.formateData(equips.getContent());
         results.put("total", equips.getTotalElements());
         results.put("limit", limit);
         return ResponseUtils.success("查询成功", results);
+    }
+
+    /**
+     * 维修设备
+     * @param userId
+     * @param id
+     * @return
+     */
+    @PostMapping("/repair")
+    public ResponseAspect repairEquip(@RequestParam("userId") Integer userId,
+                                      @RequestParam("id") Integer id) {
+        service.RepairEquip(id);
+        return ResponseUtils.success("状态已改变", null);
     }
 }

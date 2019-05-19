@@ -5,8 +5,14 @@ import com.device.manage.model.RepairModel;
 import com.device.manage.repository.RepairRepository;
 import com.device.manage.utils.SelfExcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kitetop <1363215999@qq.com>
@@ -19,6 +25,8 @@ public class RepairService {
     private RepairRepository repairRepository;
     @Autowired
     private EquipService equipService;
+    @Autowired
+    private ClassService classService;
 
     /**
      * 添加设备检修记录
@@ -26,35 +34,8 @@ public class RepairService {
      * @param model 设备检修的model对象
      * @throws SelfExcUtils 抛出自定义异常
      */
-    @Transactional
     public void addRepair(RepairModel model) throws SelfExcUtils {
-        Integer equipId = model.getEquipId();
-        if (equipService.equipAbNormal(equipId)) {
-            repairRepository.save(model);
-            equipService.changeState(equipId, EquipModel.getREPAIR());
-        } else {
-            throw new SelfExcUtils(400, "非法设备");
-        }
-    }
-
-    /**
-     * 更新检修记录，补全信息
-     *
-     * @param model
-     */
-    @Transactional
-    public void update(RepairModel model) {
-        Integer id = model.getId();
-        if (id != null && checkExist(id) && !checkHasFinish(id)) {
-            RepairModel repairModel = repairRepository.findById(id).orElse(null);
-            repairModel.setFee(model.getFee());
-            repairModel.setFinishDate(model.getFinishDate());
-            Integer equipId = repairModel.getEquipId();
-            equipService.changeState(equipId, EquipModel.getNORMAL());
-            repairRepository.save(repairModel);
-        } else {
-            throw new SelfExcUtils(400, "无效的交付信息");
-        }
+        repairRepository.save(model);
     }
 
     /**
@@ -68,16 +49,75 @@ public class RepairService {
     }
 
     /**
-     * 判断指定记录是否存在且已经完成交付
+     * 获得所有需要检修且还没有分配的设备
      *
-     * @param id 检修记录ID
+     * @param pageable
      * @return
      */
-    private Boolean checkHasFinish(Integer id) {
-        RepairModel model = repairRepository.findById(id).orElse(null);
-        if (model != null && model.getFee() != null) {
-            return true;
-        }
-        return false;
+    public Page<RepairModel> findAllRepair(Pageable pageable) {
+        return repairRepository.findAllRepair(pageable);
     }
+
+    /**
+     * 获得分配给指定用户维修的设备
+     *
+     * @param id
+     * @param pageable
+     * @return
+     */
+    public Page<RepairModel> findMyRepair(Integer id, Pageable pageable) {
+        return repairRepository.findMyRepair(id, pageable);
+    }
+
+    /**
+     * 修改指定记录中repair_man字段的数据
+     *
+     * @param userId
+     * @param id
+     */
+    public void choseRepair(Integer userId, Integer id) {
+        try {
+            repairRepository.choseRepair(userId, id);
+        } catch (Exception e) {
+            throw new SelfExcUtils(500, "选择失败，请稍后在试");
+        }
+    }
+
+    /**
+     * 完成设备维修
+     *
+     * @param id
+     */
+    @Transactional
+    public void finish(Integer id, String reason) {
+        RepairModel repairModel = repairRepository.findById(id).orElse(null);
+        if(repairModel == null) {
+            throw new SelfExcUtils(404, "不存在的维修记录");
+        } else {
+            equipService.changeState(repairModel.getEquipId(), EquipModel.getNORMAL());
+            repairModel.setReason(reason);
+            repairModel.setFinish(1);
+            repairRepository.save(repairModel);
+        }
+    }
+
+    public Map formateData(List<RepairModel> repairModels) {
+        Map<Integer, Object> results = new HashMap<>();
+        RepairModel model;
+        EquipModel equipModel;
+        int index = 0;
+        for (Object repair : repairModels) {
+            Map<String, Object> result = new HashMap<>();
+            model = (RepairModel) repair;
+            result.put("id", model.getId());
+            equipModel = equipService.findById(model.getEquipId());
+            result.put("equip_id", model.getEquipId());
+            result.put("equip_type", equipModel.getType());
+            result.put("equip_class", classService.getClassName(equipModel.getClassId()));
+            results.put(index, result);
+            index++;
+        }
+        return results;
+    }
+
 }
