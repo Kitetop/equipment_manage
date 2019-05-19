@@ -24,15 +24,4 @@ public class ScrapAction {
     @Autowired
     private ScrapService scrapService;
 
-    @PostMapping("/add")
-    public ResponseAspect addScrap(@RequestParam ("userId") Integer userId,
-                                   @Valid ScrapModel model,
-                                   BindingResult result) {
-        if(result.hasErrors()) {
-            String message = result.getFieldError().getDefaultMessage();
-            return ResponseUtils.error(400, message);
-        }
-        scrapService.addScrap(model);
-        return ResponseUtils.success("设备报废成功", null);
-    }
 }

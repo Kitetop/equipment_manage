@@ -35,12 +35,6 @@ public class ScrapModel {
     @Column(name = "request_man")
     private Integer userId;
 
-    @Column(name = "oldprice")
-    private Double oldPrice;
-
-    @NotNull(message = "折旧价不能为空")
-    @Column(name = "scrapprice")
-    private Double price;
 
     /**
      * 设置时间
@@ -90,21 +84,5 @@ public class ScrapModel {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Double getOldPrice() {
-        return oldPrice;
-    }
-
-    public void setOldPrice(Double oldPrice) {
-        this.oldPrice = oldPrice;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 }

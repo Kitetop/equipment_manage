@@ -30,19 +30,11 @@ public class EquipModel {
     @Column(name = "manufacture")
     private String facture;
 
-    private Double price = 50.00;
 
     //生产日期
     @Column(name = "proydate")
     private String proyDate;
 
-    //购买日期
-    @Column(name = "buydate")
-    private String buyDate;
-
-    //使用年限
-    @Column(name = "pre_year")
-    private Integer year = 5;
 
     //设备运行状态
     @Column(name = "equip_state")
@@ -85,36 +77,12 @@ public class EquipModel {
         this.facture = facture.trim();
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
     public String getProyDate() {
         return proyDate;
     }
 
     public void setProyDate(String proyDate) {
         this.proyDate = proyDate.trim();
-    }
-
-    public String getBuyDate() {
-        return buyDate;
-    }
-
-    public void setBuyDate(String buyDate) {
-        this.buyDate = buyDate.trim();
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
     }
 
     public Integer getState() {

@@ -75,11 +75,12 @@ public class RepairService {
      * @param userId
      * @param id
      */
+    @Transactional
     public void choseRepair(Integer userId, Integer id) {
         try {
             repairRepository.choseRepair(userId, id);
         } catch (Exception e) {
-            throw new SelfExcUtils(500, "选择失败，请稍后在试");
+            throw new SelfExcUtils(500, e.getMessage());
         }
     }
 
@@ -113,6 +114,7 @@ public class RepairService {
             equipModel = equipService.findById(model.getEquipId());
             result.put("equip_id", model.getEquipId());
             result.put("equip_type", equipModel.getType());
+            result.put("equip_facture", equipModel.getFacture());
             result.put("equip_class", classService.getClassName(equipModel.getClassId()));
             results.put(index, result);
             index++;

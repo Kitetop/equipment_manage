@@ -20,6 +20,7 @@ import java.util.Map;
  * Date: 2019/04/22
  * 设备进行维修的action层
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/repair")
 public class RepairAction {

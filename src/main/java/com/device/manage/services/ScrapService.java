@@ -20,18 +20,4 @@ public class ScrapService {
     private ScrapRepository scrapRepository;
     @Autowired
     private EquipService equipService;
-
-    @Transactional
-    public void addScrap(ScrapModel model) throws SelfExcUtils {
-        Integer equipId = model.getEquipId();
-        Object result = equipService.couldDestroy(equipId);
-        if (result instanceof EquipModel) {
-            Double price = ((EquipModel) result).getPrice();
-            model.setOldPrice(price);
-            scrapRepository.save(model);
-            equipService.changeState(equipId, EquipModel.getDESTROY());
-        } else {
-            throw new SelfExcUtils(400, "非法的报废请求");
-        }
-    }
 }
