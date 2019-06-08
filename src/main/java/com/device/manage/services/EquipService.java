@@ -100,14 +100,15 @@ public class EquipService {
      * @param id 设备id
      * @return Boolean
      */
-    public Object couldDestroy(Integer id) {
+    public Boolean couldDestroy(Integer id) {
         EquipModel model = repository.findById(id).orElse(null);
         if (model != null) {
             Integer state = model.getState();
-            if (state.equals(EquipModel.getNORMAL()) || state.equals(EquipModel.getDESTROY())) {
+            if (state.equals(EquipModel.getREPAIR())) {
+                return true;
+            } else {
                 return false;
             }
-            return model;
         }
         return false;
     }
@@ -119,7 +120,7 @@ public class EquipService {
      * @return
      */
     private Boolean checkState(Integer state) {
-        if (state == EquipModel.getNORMAL()||
+        if (state.equals(EquipModel.getNORMAL()) ||
                 state.equals(EquipModel.getABNORMAL()) ||
                 state.equals(EquipModel.getREPAIR()) ||
                 state.equals(EquipModel.getDESTROY())
@@ -149,25 +150,27 @@ public class EquipService {
 
     /**
      * 根据设备id查找设备信息
+     *
      * @param id
      * @return
      */
     public EquipModel findById(Integer id) {
-       EquipModel model = repository.findById(id).orElse(null);
-       if(model != null) {
-           return model;
-       }else {
-           throw new SelfExcUtils(404, "该设备不存在");
-       }
+        EquipModel model = repository.findById(id).orElse(null);
+        if (model != null) {
+            return model;
+        } else {
+            throw new SelfExcUtils(404, "该设备不存在");
+        }
     }
 
     /**
      * 维修设备
+     *
      * @param id
      */
     @Transactional
     public void RepairEquip(Integer id) {
-        if(equipAbNormal(id)) {
+        if (equipAbNormal(id)) {
             RepairModel repairModel = new RepairModel();
             repository.updateState(id, EquipModel.getREPAIR());
             repairModel.setEquipId(id);

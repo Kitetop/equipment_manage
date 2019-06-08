@@ -28,6 +28,7 @@ public class ScrapModel {
     @Column(name = "scrap_date")
     private String date;
 
+    @NotNull(message = "报废原因不能为空")
     @Column(name = "scrap_reason")
     private String reason;
 

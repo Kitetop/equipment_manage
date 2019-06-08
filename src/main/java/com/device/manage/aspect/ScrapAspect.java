@@ -30,7 +30,7 @@ public class ScrapAspect {
     @Around("checkAdmin()")
     private Object beforeAdd(ProceedingJoinPoint point) throws Throwable {
         Integer userId = (Integer) point.getArgs()[0];
-        if (userService.checkType(userId)) {
+        if (userService.checkRepair(userId)) {
             return point.proceed();
         }
         throw new SelfExcUtils(400, "没有操作权限");
